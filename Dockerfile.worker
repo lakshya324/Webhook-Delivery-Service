@@ -1,0 +1,17 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy application code
+COPY . .
+
+# Ensure worker-entrypoint.sh is executable before copying
+COPY worker-entrypoint.sh /app/worker-entrypoint.sh
+RUN chmod +x /app/worker-entrypoint.sh
+
+# Set entrypoint
+CMD ["python", "-m", "app.worker"]
