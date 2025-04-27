@@ -8,6 +8,7 @@ The Webhook Delivery Service is a FastAPI-based application designed to manage w
 - **Webhook Ingestion**: Send and process webhooks with payloads.
 - **Delivery Tracking**: Monitor delivery attempts and view detailed logs.
 - **Statistics**: Analyze webhook delivery performance.
+- **Interactive API Documentation**: Access `/docs` (Swagger UI) and `/redoc` (ReDoc) for API exploration.
 
 ## Project Structure
 ```
@@ -30,6 +31,14 @@ requirements.txt        # Python dependencies
 ```
 
 ## Installation
+
+### Prerequisites
+- Python 3.8+
+- PostgreSQL
+- Redis
+- Docker (optional for containerized deployment)
+
+### Local Setup
 1. Clone the repository:
    ```bash
    git clone <repository-url>
@@ -52,10 +61,29 @@ requirements.txt        # Python dependencies
    alembic upgrade head
    ```
 
-5. Run the application:
+5. Start the application locally:
    ```bash
-   uvicorn app.main:app --reload
+   python run_local.py app
    ```
+
+6. Start the worker process:
+   ```bash
+   python run_local.py worker
+   ```
+
+7. Access the application:
+   - API Documentation (Swagger UI): [http://localhost:8000/docs](http://localhost:8000/docs)
+   - API Documentation (ReDoc): [http://localhost:8000/redoc](http://localhost:8000/redoc)
+
+### Docker Setup
+1. Build and run the application using Docker:
+   ```bash
+   docker-compose up --build
+   ```
+
+2. Access the application:
+   - API Documentation (Swagger UI): [http://localhost:8000/docs](http://localhost:8000/docs)
+   - API Documentation (ReDoc): [http://localhost:8000/redoc](http://localhost:8000/redoc)
 
 ## API Endpoints
 ### Subscriptions
@@ -78,11 +106,9 @@ Run the test suite using pytest:
 pytest tests/
 ```
 
-## Docker
-Build and run the application using Docker:
-```bash
-docker-compose up --build
-```
-
 ## License
 This project is licensed under the MIT License.
+
+---
+
+**Created by Lakshya Sharma**
