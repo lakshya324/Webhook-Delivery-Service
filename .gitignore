@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.env
+*.db
+
+# macOS
+.DS_Store
+
+# Docker
+docker-compose.override.yml
+*.log
+
+# Virtual Environment
+venv/
+.env
+
+# Alembic
+alembic/versions/__pycache__/
+
+# Test Artifacts
+*.pytest_cache/
+*.coverage
+htmlcov/
+
+# IDEs
+.vscode/
+.idea/
