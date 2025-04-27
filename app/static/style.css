@@ -1,0 +1,22 @@
+/* Custom styling for webhook service */
+.card {
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.nav-tabs .nav-link.active {
+    font-weight: bold;
+}
+
+pre {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.table-responsive {
+    max-height: 70vh;
+    overflow-y: auto;
+}
