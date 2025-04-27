@@ -41,8 +41,8 @@ requirements.txt        # Python dependencies
 ### Local Setup
 1. Clone the repository:
    ```bash
-   git clone <repository-url>
-   cd segwise_assignment
+   git clone https://github.com/lakshya324/Webhook-Delivery-Service.git
+   cd Webhook-Delivery-Service
    ```
 
 2. Create a virtual environment and activate it:
@@ -107,7 +107,7 @@ pytest tests/
 ```
 
 ## License
-This project is licensed under the MIT License.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
 ---
 
