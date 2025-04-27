@@ -34,10 +34,9 @@ if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("Please specify a command: 'app' or 'worker'")
         sys.exit(1)
-    
+
     command = sys.argv[1]
-    
-    # Setup database first
+
     if command == "app":
         setup_database()
         run_app()

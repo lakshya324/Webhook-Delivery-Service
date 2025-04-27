@@ -1,9 +1,6 @@
 #!/bin/bash
 # Script to start both the app and worker processes for local development
 
-# Make this script executable
-# chmod +x start_local.sh
-
 # Check if Python is installed
 if ! command -v python3 &> /dev/null; then
     echo "Python 3 is required but not installed. Please install it first."
@@ -42,7 +39,6 @@ if ! redis-cli ping > /dev/null 2>&1; then
 fi
 
 # Start the application and worker in separate terminals
-# On macOS
 echo "Starting the application and worker..."
 osascript -e 'tell app "Terminal" to do script "cd '"$(pwd)"' && source venv/bin/activate && python run_local.py app"'
 osascript -e 'tell app "Terminal" to do script "cd '"$(pwd)"' && source venv/bin/activate && python run_local.py worker"'
