@@ -10,6 +10,9 @@ def create_webhook_payload(db: Session, webhook: WebhookPayloadCreate) -> Webhoo
     """
     Create a new webhook payload entry
     """
+    if not webhook.payload:
+        raise ValueError("Webhook payload cannot be empty")
+        
     webhook_id = str(uuid.uuid4())
     db_webhook = WebhookPayload(
         id=webhook_id,

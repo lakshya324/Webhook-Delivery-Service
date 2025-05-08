@@ -41,12 +41,14 @@ def get_subscription(db: Session, subscription_id: str) -> Optional[Subscription
     # Try to get from cache first
     cached_subscription = RedisCache.get_subscription(subscription_id)
     if cached_subscription:
-        # Convert cached data back to model
+        # Convert cached data back to model with proper datetime handling
         return Subscription(
             id=cached_subscription["id"],
             target_url=cached_subscription["target_url"],
             secret_key=cached_subscription["secret_key"],
-            event_types=cached_subscription["event_types"]
+            event_types=cached_subscription["event_types"],
+            created_at=datetime.fromisoformat(cached_subscription.get("created_at", datetime.now(timezone.utc).isoformat())),
+            updated_at=datetime.fromisoformat(cached_subscription.get("updated_at", datetime.now(timezone.utc).isoformat()))
         )
     
     # If not in cache, get from database and cache it
@@ -56,7 +58,9 @@ def get_subscription(db: Session, subscription_id: str) -> Optional[Subscription
             "id": db_subscription.id,
             "target_url": db_subscription.target_url,
             "secret_key": db_subscription.secret_key,
-            "event_types": db_subscription.event_types
+            "event_types": db_subscription.event_types,
+            "created_at": db_subscription.created_at.isoformat(),
+            "updated_at": db_subscription.updated_at.isoformat()
         }
         RedisCache.set_subscription(db_subscription.id, subscription_data)
     

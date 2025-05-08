@@ -85,49 +85,37 @@ class WebhookDeliveryService:
     
     @staticmethod
     async def handle_delivery_result(
-        db: Session, 
-        log: DeliveryLog, 
-        success: bool, 
-        status_code: Optional[int], 
+        db: Session,
+        log: DeliveryLog,
+        success: bool,
+        status_code: int,
         error_details: Optional[str]
     ) -> Tuple[DeliveryLog, bool]:
         """
-        Handle the result of a delivery attempt
-        
-        Returns a tuple of (updated_log, should_retry)
+        Handle the result of a webhook delivery attempt
         """
         if success:
-            # Update log to success status
-            delivery_crud.update_delivery_status(
-                db, 
-                log.id, 
-                DeliveryStatus.SUCCESS, 
-                status_code=status_code
-            )
-            return log, False
+            log.status = DeliveryStatus.SUCCESS
+            log.status_code = status_code
+            should_retry = False
+        else:
+            # Check if we should retry based on status code
+            if status_code in [408, 429, 500, 502, 503, 504]:  # Retryable status codes
+                log.status = DeliveryStatus.FAILED_ATTEMPT
+                log.attempt_number += 1
+                # Implement exponential backoff
+                retry_delay = min(300, 2 ** (log.attempt_number - 1))  # Max 5 minutes
+                log.next_attempt_at = datetime.utcnow() + timedelta(seconds=retry_delay)
+                should_retry = True
+            else:
+                log.status = DeliveryStatus.FAILURE
+                should_retry = False
+            
+            log.status_code = status_code
+            log.error_details = error_details
+
+        db.add(log)
+        db.commit()
+        db.refresh(log)
         
-        # Delivery failed
-        if log.attempt_number >= settings.MAX_RETRY_ATTEMPTS:
-            # Final attempt failed, mark as failure
-            delivery_crud.update_delivery_status(
-                db, 
-                log.id,
-                DeliveryStatus.FAILURE,
-                status_code=status_code,
-                error_details=error_details
-            )
-            return log, False
-        
-        # Update current log as failed attempt
-        delivery_crud.update_delivery_status(
-            db,
-            log.id,
-            DeliveryStatus.FAILED_ATTEMPT,
-            status_code=status_code,
-            error_details=error_details
-        )
-        
-        # Create next attempt with exponential backoff
-        next_log = delivery_crud.create_next_attempt(db, log)
-        
-        return next_log, True
+        return log, should_retry
